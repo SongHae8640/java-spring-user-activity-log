@@ -15,6 +15,11 @@ public class AccessLogFilter extends OncePerRequestFilter {
   private static final Logger log = LoggerFactory.getLogger(AccessLogFilter.class);
 
   @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    return !request.getServletPath().startsWith("/api/v1");
+  }
+
+  @Override
   protected void doFilterInternal(
       HttpServletRequest request,
       HttpServletResponse response,
