@@ -1,6 +1,8 @@
 package com.template.useractivitylog.global.config;
 
-import com.template.useractivitylog.domains.board.filter.AccessLogFilter;
+import com.template.useractivitylog.domains.accessLog.filter.AccessLogFilter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +14,9 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final ApplicationEventPublisher eventPublisher;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,7 +28,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .csrf(AbstractHttpConfigurer::disable);
-        http.addFilterAfter(new AccessLogFilter(), AnonymousAuthenticationFilter.class);
+        http.addFilterAfter(new AccessLogFilter(eventPublisher), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 }
